@@ -5,8 +5,99 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation</title>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+    </style>
 </head>
 <body>
-    <h1>Documentation that documentates the document</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Request</th>
+                <th>URL</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Return all movies</td>
+                <td>app.get()</td>
+                <td>'/movies'</td>
+                <td>Returns an array of all JSON movie objects in the database</td>
+            </tr>
+            <tr>
+                <td>Return single movie data</td>
+                <td>app.get()</td>
+                <td>'/movies/:title'</td>
+                <td>Returns a JSON object returning the data for one movie based on the title passed in the url parameter</td>
+            </tr>
+            <tr>
+                <td>Return data about a genre</td>
+                <td>app.get()</td>
+                <td>'/movies/:genre'</td>
+                <td>Returns an array of all JSON movie objects within database that includes the genre passed in the url parameter</td>
+            </tr>
+            <tr>
+                <td>Return data about a director</td>
+                <td>app.get()</td>
+                <td>'/movies/:directorName'</td>
+                <td>Returns a JSON object containing data of the director based on the name that was passed into the url parameter</td>
+            </tr>
+            <tr>
+                <td>Allow new users to register</td>
+                <td>app.post() eg. {
+                    title: 'Guardian of the Galaxy Vol. 2',
+                    released: '2017',
+                    genre: 'action',
+                    director: {
+                        bio: 'I make movies',
+                        birthYear: '1999',
+                        deathYear: 'n/a'
+                    }
+                }</td>
+                <td>'/users'</td>
+                <td>Returns the same JSON object that was passed into the req body and added to the database</td>
+            </tr>
+            <tr>
+                <td>Allow users to update their user info</td>
+                <td>app.put() eg. {username: 'john'}</td>
+                <td>'/users/:username'</td>
+                <td>Returns the data fields that was updated by the user</td>
+            </tr>
+            <tr>
+                <td>Allow users to add a movie to their list of favorites</td>
+                <td>app.post() eg. 'The Hangover'</td>
+                <td>'/users/add/:movieName'</td>
+                <td>Returns a text confirming which movie was added successfully</td>
+            </tr>
+            <tr>
+                <td>Allow users to remove a movie to their list of favorites</td>
+                <td>app.delete()</td>
+                <td>'/users/remove/:movieName'</td>
+                <td>Returns a text confirming which movie was removed successfully</td>
+            </tr>
+            <tr>
+                <td>Allow existing users to deregister</td>
+                <td>app.delete()</td>
+                <td>'/users/deleteAccount'</td>
+                <td>Returns a text confirming that the user's email was deleted successfully</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>
