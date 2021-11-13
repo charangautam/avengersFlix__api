@@ -72,31 +72,6 @@ app.get('/movies/:DirectorName', (req, res) => {
         });
 });
 
-
-// return all movies with a genre
-app.get('/movies/genre/:genre', (req, res) => {
-    let movieList = []
-    movies.find((movie) => {
-        if(movie.genre === req.params.genre) {
-            movieList.push(movie)
-        }
-    });
-
-    res.json(movieList)
-});
-
-// 
-app.get('/movies/director/:directorName', (req, res) => {
-    let director = movies.find((movie) => {
-        return movie.director.name === req.params.directorName;
-    });
-    if(director) {
-        res.status(200).json(director)
-    } else {
-        res.status(400).send('No director with that name is found')
-    }
-});
-
 // create a user
 app.post('/users', (req, res) => {
     Users.findOne({ Username: req.body.Username })
