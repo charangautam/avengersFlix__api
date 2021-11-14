@@ -9,6 +9,9 @@ const Users = Models.User;
 
 const app = express();
 
+// routes
+const authRoutes = require('./auth.js');
+
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // middleware
@@ -16,6 +19,8 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(express.json());
 
+// use routes
+app.use('/auth/',authRoutes)
 
 // routes
 
@@ -49,7 +54,7 @@ app.get('/movies/:Title', (req, res) => {
 });
 
 // return description of genre
-app.get('/movies/:GenreName', (req, res) => {
+app.get('/genres/:GenreName', (req, res) => {
     Movies.findOne({ "Genre.Name": req.params.GenreName })
         .then((movie) => {
             res.status(200).json(movie.Genre.Description);
@@ -61,7 +66,7 @@ app.get('/movies/:GenreName', (req, res) => {
 });
 
 // return director info 
-app.get('/movies/:DirectorName', (req, res) => {
+app.get('/directors/:DirectorName', (req, res) => {
     Movies.findOne({ "Director.Name": req.params.DirectorName })
         .then((movie) => {
             res.status(200).json(movie.Director)
