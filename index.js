@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const Models = require('./models.js');
 const Movies = Models.Movie;
@@ -15,12 +16,24 @@ const authRoutes = require('./auth.js');
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // middleware
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if(!origin) return callback(null, true);
+        if(allowedOrigins.indexOf(origin) === -1) { // If a specific origin isn’t found on the list of allowed origins
+            let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+            return callback(new Error(message ), false);
+        }
+        return callback(null, true);
+  }
+}));
 app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(express.json());
 
 // use routes
-app.use('/', authRoutes)
+let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
@@ -113,7 +126,7 @@ app.get('/users', (req, res) => {
 });
 
 // get a user 
-app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users/:Username', (req, res) => {
     Users.findOne({ Username: req.params.Username })
         .then((user) => {
             res.status(200).json(user);
