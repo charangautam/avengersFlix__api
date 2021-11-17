@@ -151,6 +151,10 @@ app.put('/users/:Username',
         check('Birthday', 'Follow date format').isDate()
     ],
     (req, res) => {
+        let errors = validationResult(req);
+        if(!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
         Users.findOneAndUpdate({ Username: req.params.Username }, 
             { $set: req.body}, 
             { new: true })
