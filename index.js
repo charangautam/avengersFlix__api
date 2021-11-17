@@ -148,7 +148,7 @@ app.put('/users/:Username',
         check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
         check('Password', 'Password is required and should be >= 6 characters').isLength({ min: 6 }),
         check('Email', 'Email is required').isEmail(),
-        check('Birthday', 'Follow date format').isDate()
+        check('Birthday', 'Follow (YYYY-MM-DD) format').isDate()
     ],
     (req, res) => {
         let errors = validationResult(req);
