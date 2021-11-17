@@ -14,7 +14,8 @@ const app = express();
 // routes
 const authRoutes = require('./auth.js');
 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // middleware
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
@@ -236,3 +237,4 @@ const port = process.env.PORT || 8080
 app.listen(port, '0.0.0.0', () => {
     console.log(`server is running on ${port}`);
 });
+
