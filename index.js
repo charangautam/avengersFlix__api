@@ -23,7 +23,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // use routes
-let auth = require('./auth')(app);
+require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
@@ -62,7 +62,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
 app.get('/genres/:GenreName', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.findOne({ "Genre.Name": req.params.GenreName })
         .then((movie) => {
-            res.status(200).json(movie.Genre.Description);
+            res.status(200).json(movie.Genre);
         })
         .catch((err) => {
             console.error(err);
@@ -83,7 +83,7 @@ app.get('/directors/:DirectorName', passport.authenticate('jwt', { session: fals
 });
 
 // create a user
-app.post('/users', 
+app.post('/users',
     [
         check('Username', 'Username is required and should be >= 4 characters').isLength({ min: 4 }),
         check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
@@ -92,7 +92,7 @@ app.post('/users',
     ],
     (req, res) => {
         let errors = validationResult(req);
-        if(!errors.isEmpty()) {
+        if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
         Users.findOne({ Username: req.body.Username })
@@ -117,7 +117,7 @@ app.post('/users',
 );
 
 // get all users 
-app.get('/users', (req, res) => {
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.find()
         .then((users) => {
             res.status(200).json(users);
@@ -129,7 +129,7 @@ app.get('/users', (req, res) => {
 });
 
 // get a user 
-app.get('/users/:Username', (req, res) => {
+app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOne({ Username: req.params.Username })
         .then((user) => {
             res.status(200).json(user);
@@ -141,7 +141,7 @@ app.get('/users/:Username', (req, res) => {
 });
 
 // update user info 
-app.put('/users/:Username', 
+app.put('/users/:Username',
     passport.authenticate('jwt', { session: false }),
     [
         check('Username', 'Username is required and should be >= 4 characters').isLength({ min: 4 }),
@@ -152,15 +152,15 @@ app.put('/users/:Username',
     ],
     (req, res) => {
         let errors = validationResult(req);
-        if(!errors.isEmpty()) {
+        if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
-        Users.findOneAndUpdate({ Username: req.params.Username }, 
-            { $set: req.body}, 
+        Users.findOneAndUpdate({ Username: req.params.Username },
+            { $set: req.body },
             { new: true })
             .then((user) => {
                 res.status(200).json(user);
-                })
+            })
             .catch((err) => {
                 console.error(err);
                 res.status(500).send('Error: ' + err);
@@ -197,13 +197,13 @@ app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { se
 });
 
 // delete a user 
-app.delete('/users/:Username', (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
     Users.findOneAndDelete({ Username: req.params.Username })
         .then((user) => {
-            if(!user) {
-                res.status(400).send(`${req.params.Username} was not found`);
+            if (!user) {
+                res.status(404).send(`${req.params.Username} was not found`);
             } else {
-                res.status(200).send(`${req.params.Username} was deleted`)
+                res.status(204).end();
             }
         })
         .catch((err) => {
