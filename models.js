@@ -25,7 +25,7 @@ let movieSchema = new mongoose.Schema({
     Director: {
         Name: String,
         Bio: String,
-        Age: Number
+        Age: String
     },
     ImgPath: String,
     Featured: Boolean
@@ -51,8 +51,8 @@ let userSchema = new mongoose.Schema({
 userSchema.statics.hashPassword = (password) => {
     return bcrypt.hashSync(password, 10);
 };
-  
-userSchema.methods.validatePassword = function(password) {
+
+userSchema.methods.validatePassword = function (password) {
     return bcrypt.compareSync(password, this.Password);
 };
 
