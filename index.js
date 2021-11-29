@@ -149,6 +149,8 @@ app.put('/users/:Username',
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.array() });
         }
+
+        if (req.body.Password) req.body.Password = Users.hashPassword(req.body.Password);
         Users.findOneAndUpdate({ Username: req.params.Username },
             { $set: req.body },
             { new: true })
