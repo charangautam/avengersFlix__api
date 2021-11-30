@@ -136,19 +136,32 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 });
 
 // update user info 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
-    if (req.body.Password) req.body.Password = Users.hashPassword(req.body.Password);
-    Users.findOneAndUpdate({ Username: req.params.Username },
-        { $set: req.body },
-        { new: true })
-        .then((user) => {
-            res.status(200).json(user);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send('Error: ' + err);
-        });
-}
+app.put('/users/:Username',
+    passport.authenticate('jwt', { session: false }),
+    [
+        check('Username', 'Username is required and should be >= 4 characters').isLength({ min: 4 }),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required and should be >= 6 characters').isLength({ min: 6 }),
+        check('Email', 'Email is required').isEmail()
+    ],
+    (req, res) => {
+        let errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        if (req.body.Password) req.body.Password = Users.hashPassword(req.body.Password);
+        Users.findOneAndUpdate({ Username: req.params.Username },
+            { $set: req.body },
+            { new: true })
+            .then((user) => {
+                res.status(200).json(user);
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send('Error: ' + err);
+            });
+    }
 );
 
 // add movie to a user's favorite movies
