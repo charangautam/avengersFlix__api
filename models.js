@@ -49,36 +49,16 @@ let userSchema = new mongoose.Schema({
 });
 
 
-userSchema.pre('save', function (next) {
-    var user = this;
+userSchema.statics.hashPassword = (password) => {
+    return bcrypt.hashSync(password, 10);
+};
 
-    // only hash the password if it has been modified (or is new)
-    if (!user.isModified('Password')) return next();
+userSchema.methods.validatePassword = function (password) {
+    return bcrypt.compareSync(password, this.Password);
+};
 
-    // generate a salt
-    bcrypt.genSalt(10, function (err, salt) {
-        if (err) return next(err);
+let Movie = mongoose.model('Movie', movieSchema);
+let User = mongoose.model('User', userSchema);
 
-        // hash the password using our new salt
-        bcrypt.hash(user.Password, salt, function (err, hash) {
-            if (err) return next(err);
-
-            // override the cleartext password with the hashed one
-            user.Password = hash;
-            next();
-        });
-    });
-
-    // userSchema.statics.hashPassword = (password) => {
-    //     return bcrypt.hashSync(password, 10);
-    // };
-
-    userSchema.methods.validatePassword = function (password) {
-        return bcrypt.compareSync(password, this.Password);
-    };
-
-    let Movie = mongoose.model('Movie', movieSchema);
-    let User = mongoose.model('User', userSchema);
-
-    module.exports.Movie = Movie;
-    module.exports.User = User;
+module.exports.Movie = Movie;
+module.exports.User = User;

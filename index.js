@@ -95,6 +95,7 @@ app.post('/users',
                 if (user) {
                     return res.status(400).send(`The username '${req.body.Username}' already exists`);
                 } else {
+                    req.body.Password = Users.hashPassword(req.body.Password);
                     Users.create(req.body)
                         .then((user) => res.status(201).json(user))
                         .catch((err) => {
@@ -149,11 +150,21 @@ app.put('/users/:Username',
             return res.status(422).json({ errors: errors.array() });
         }
 
+        Users.findOne({ Username: req.params.Username })
+            .then((user) => {
+                if (!user.Password === req.body.Password) {
+                    return req.body.Password = Users.hashPassword(req.body.Password);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                res.status(500).send(`Error: ${err}`);
+            });
+
         Users.findOneAndUpdate({ Username: req.params.Username },
             { $set: req.body },
             { new: true })
             .then((user) => {
-                Users.save();
                 res.status(200).json(user);
             })
             .catch((err) => {
