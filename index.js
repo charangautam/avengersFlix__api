@@ -155,21 +155,20 @@ app.put('/users/:Username',
                 if (user.Password !== req.body.Password) {
                     req.body.Password = Users.hashPassword(req.body.Password);
                 }
+                Users.findOneAndUpdate({ Username: req.params.Username },
+                    { $set: req.body },
+                    { new: true })
+                    .then((user) => {
+                        res.status(200).json(user);
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        res.status(500).send('Error: ' + err);
+                    });
             })
             .catch((err) => {
                 console.error(err);
                 res.status(500).send(`Error: ${err}`);
-            });
-
-        Users.findOneAndUpdate({ Username: req.params.Username },
-            { $set: req.body },
-            { new: true })
-            .then((user) => {
-                res.status(200).json(user);
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).send('Error: ' + err);
             });
     }
 );
