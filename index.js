@@ -153,7 +153,7 @@ app.put('/users/:Username',
         Users.findOne({ Username: req.params.Username })
             .then((user) => {
                 if (!user.Password === req.body.Password) {
-                    return req.body.Password = Users.hashPassword(req.body.Password);
+                    req.body.Password = Users.hashPassword(req.body.Password);
                 }
             })
             .catch((err) => {
