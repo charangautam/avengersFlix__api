@@ -29,6 +29,18 @@ require('./passport');
 
 // routes
 
+// create a movie 
+app.post('/movies', (req, res) => {
+    Movies.create(req.body)
+        .then(movie => {
+            res..status(200).json(movie)
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).send(`Error: ${err}`);
+        })
+})
+
 // get all movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
     Movies.find()
