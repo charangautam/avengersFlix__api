@@ -16,7 +16,7 @@ const app = express();
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // middleware
-let allowedOrigins = ['http://localhost:8080', 'https://avengers-database.herokuapp.com', 'http://localhost:1234', 'https://avengersflix.netlify.app'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'https://avengersflix.netlify.app'];
 
 app.use(cors({
     origin: (origin, callback) => {
