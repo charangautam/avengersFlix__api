@@ -17,7 +17,7 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 
 // middleware
 let allowedOrigins = ['http://localhost:3000', 'https://avengersflix.netlify.app',
-    'http://localhost:4200', 'https://charangautam.github.io/avengersFlix-Angular'];
+    'http://localhost:4200', 'https://charangautam.github.io', 'https://charangautam.github.io/avengersFlix-Angular'];
 
 app.use(cors({
     origin: (origin, callback) => {
